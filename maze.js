@@ -29,6 +29,15 @@ var updateCells = function() {
         }
     }
 };
+var updateCellsInBox = function(startX, startY, width, height){
+    for (var x = startX; x < startX + width; x++) {
+        for (var y = startY; y < startY + height; y++) {
+            if(cellExists(x, y)){
+                cells[x][y].update();
+            }
+        }
+    }
+};
 var cellExists = function(x, y) {
     return x >= 0 && x < cellsPerXY && y >= 0 && y < cellsPerXY;
 };
@@ -102,8 +111,8 @@ Cell.prototype.getAliveAdjacent = function() {
     var adjacent = this.getDirectlyAdjacent();
     var alive = [];
     for (var i = 0; i < 4; i++) {
-        if (adjacent[i] !== undefined && adjacent[i].isAlive) alive.push(
-            adjacent[i]);
+        if (adjacent[i] !== undefined && adjacent[i].isAlive) 
+            alive.push(adjacent[i]);
     }
     return alive;
 };
@@ -120,40 +129,111 @@ var getValidFromArray = function(array) {
     return alive;
 };
 var randXY = function() {
-    return randomInt(0, cellsPerXY - 1);
+    return randomInt(5, cellsPerXY - 6);
 };
 var randomInt = function(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 };
-var generateMaze = function(x, y) {
+var animateMaze = function(x, y) {
     //Select starting point, make it into maze
     var point = cells[x][y];
     point.makeIntoMaze();
-    failsafe = [];
+    point.draw();
+    updateCellsInBox(point.x-1, point.y-1, 3, 3);
+    var failsafe = [];
+    var isBeginning = true;
     //Make sure our start has places to move to
-    while (point.hasAliveAdjacent()) {
+    var mazing = setInterval(function(){
+        if(point === undefined || !point.hasAliveAdjacent())
+            clearInterval(mazing);
         //Gather all adjacent spots
         var adjacent = point.getAliveAdjacent();
         //Select a random adjacent, make that our point and make it into a maze
         //the update all the cells so they can adjust accordingly
         var randomAdjacent = randomInt(0, adjacent.length - 1);
         point = adjacent[randomAdjacent];
-        point.makeIntoMaze();
-        updateCells();
-        adjacent = adjacent.splice(randomAdjacent, 1);
-        if (adjacent.length > 0) failsafe = failsafe.concat(adjacent);
-        failsafe = getValidFromArray(failsafe);
-        if (!point.hasAliveAdjacent() && failsafe.length > 0) {
-            point = failsafe.pop();
+        if(point !== undefined){
             point.makeIntoMaze();
-            updateCells();
+            point.draw();
+            updateCellsInBox(point.x-1, point.y-1, 3, 3);
+            adjacent = adjacent.splice(randomAdjacent, 1);
+        }
+        if(isBeginning){
+            isBeginning = false;
+            for(var i = 0; i < adjacent.length; i++)
+                animateMaze(adjacent[i].x, adjacent[i].y);
+            adjacent = [];
+        }
+        if (adjacent.length > 0) failsafe = failsafe.concat(adjacent);
+
+        failsafe = getValidFromArray(failsafe);
+
+        if(point === undefined || !point.hasAliveAdjacent() && failsafe.length > 0) {
+            if(point === undefined)
+                clearInterval(mazing);
+            point = failsafe.pop();
+            if(point === undefined)
+                return;
+            point.makeIntoMaze();
+            point.draw();
+            updateCellsInBox(point.x-1, point.y-1, 3, 3);
+        }
+    }, 0);
+};
+var generateMaze = function(x, y) {
+    //Select starting point, make it into maze
+    var point = cells[x][y];
+    point.makeIntoMaze();
+    failsafe = [];
+    var isBeginning = true;
+    //Make sure our start has places to move to
+    while (point.hasAliveAdjacent() && point !== undefined) {
+        //Gather all adjacent spots
+        var adjacent = point.getAliveAdjacent();
+        //Select a random adjacent, make that our point and make it into a maze
+        //the update all the cells so they can adjust accordingly
+        var randomAdjacent = randomInt(0, adjacent.length - 1);
+        point = adjacent[randomAdjacent];
+        if(point !== undefined){
+            point.makeIntoMaze();
+            updateCellsInBox(point.x-1, point.y-1, 3, 3);
+            adjacent = adjacent.splice(randomAdjacent, 1);
+        }
+        if(isBeginning){
+            isBeginning = false;
+            for(var i = 0; i < adjacent.length; i++)
+                animateMaze(adjacent[i].x, adjacent[i].y);
+            adjacent = [];
+        }
+        if (adjacent.length > 0) failsafe = failsafe.concat(adjacent);
+
+        failsafe = getValidFromArray(failsafe);
+
+        if(point === undefined || !point.hasAliveAdjacent() && failsafe.length > 0) {
+            if(point === undefined)
+                break;
+            point = failsafe.pop();
+            if(point === undefined)
+                continue;
+            point.makeIntoMaze();
+            updateCellsInBox(point.x-1, point.y-1, 3, 3);
         }
     }
 };
 var doGen = function() {
     resetCells();
-    generateMaze(randXY(), randXY());
+    if(document.getElementById("doAnimate").checked)
+        animateMaze(randXY(), randXY());
+    else
+        generateMaze(randXY(), randXY());
     renderCells();
 };
+var setCellSize = function() {
+    cellsPerXY = document.getElementById("cellsPerXY").value;
+    cellSize = 400 / cellsPerXY;
+    cells = [];
+    populateCells();
+    renderCells();
+}
 populateCells();
 renderCells();

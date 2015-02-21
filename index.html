@@ -4,8 +4,18 @@
 		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
+		<p>
+			Animate: <input type="checkbox" id="doAnimate" checked>
+		</p>
+		<p>Cells Per X and Y:
+			<input type="number" value="40" id="cellsPerXY">
+			<br><br>
+			<button onClick="setCellSize()">Set Cell Size</button>
+		</p>
+
 		<canvas id="canvas"></canvas>
 		<br>
+
 		<button onClick="doGen()">Generate!</button>
 		<script type="text/javascript" src="maze.js"></script>
 	</body>

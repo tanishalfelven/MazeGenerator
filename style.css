@@ -4,6 +4,10 @@ canvas {
     border: solid black;
 }
 
+input {
+	width:60px;
+}
+
 * {
 	text-align: center;
 }
