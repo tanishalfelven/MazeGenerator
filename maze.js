@@ -164,16 +164,21 @@ var setGenButton = function(newText){
 var toggleGenButton = function(){
     var btn = document.getElementById("generate");
     btn.disable = !btn.disable;
-}
+    console.log(btn.disable);
+};
 var updateTime = function(){
     document.getElementById("time").firstChild.data = 
         "~" + ((new Date() - startTime)/1000) + " sec";
-}
+};
 var start = function(){
-    setGenButton("Generating...");
-    setTimeout(function(){toggleGenButton();
-    doGen();}, 0);
-}
+    if(!document.getElementById("generate").disable){
+        setGenButton("Generating...");  
+        toggleGenButton();
+        setTimeout(function(){
+            doGen();
+        }, 0);
+    }
+};
 var doGen = function() {
     resetCells();
     clearCanvas();
@@ -193,6 +198,14 @@ var setCellSize = function() {
     cells = [];
     populateCells();
     renderCells();
-}
+};
+var downloadAsImage = function(){
+    var rawImageData = canvas.toDataURL("image/png;base64");
+    rawImageData = rawImageData.replace("image/png", "image/octet-stream");
+    var imgLink = document.createElement("a");
+    imgLink.href = rawImageData;
+    imgLink.download = "maze.png";
+    imgLink.click();
+};
 populateCells();
 renderCells();
