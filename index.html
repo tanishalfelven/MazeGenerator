@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="style.css">
+		<script type="text/javascript" src="cell.js"></script>
 	</head>
 	<body>
 		<p>
@@ -16,7 +17,8 @@
 		<canvas id="canvas"></canvas>
 		<br>
 
-		<button onClick="doGen()">Generate!</button>
+		<button onClick="start()" id="generate">Generating!</button>
+		<p>Elapsed Time: <span id="time">0</span></p>
 		<script type="text/javascript" src="maze.js"></script>
 	</body>
 </html>
