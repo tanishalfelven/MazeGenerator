@@ -1,22 +1,7 @@
-class Cell {
-	constructor(x, y, isAvailable = true) {
-		this.x = x;
-		this.y = y;
-		this.isAvailable = isAvailable;
-		this.isMaze      = false;
-	}
+import m from "mithril";
+import Cell from "./Cell";
 
-	makeMaze() {
-		this.isMaze = true;
-		this.makeUnavailable();
-	}
-
-	makeUnavailable() {
-		this.isAvailable = false;
-	}
-}
-
-class Matrix {
+export default class Matrix {
 	constructor(width, height, worms) {
 		this.width = width;
 		this.height = height;
@@ -74,7 +59,7 @@ class Matrix {
 	}
 
 	getAdjacentCells(p) {
-		// get every adjacent cell (left, right, up, down), then check if at least one cell is available
+		// get every adjacent cell (left, right, up, down)
 		return [this.getCell(p.x - 1, p.y), this.getCell(p.x + 1, p.y), this.getCell(p.x, p.y - 1), this.getCell(p.x, p.y + 1)];
 	}
 

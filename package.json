@@ -1,0 +1,25 @@
+{
+  "name": "MazeGenerator",
+  "version": "1.0.0",
+  "description": "A random maze generator in JavaScript",
+  "main": "config.js",
+  "scripts": {
+    "start": "webpack src/main.js --output gen/app.js -d --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tanishalfelven/MazeGenerator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tanishalfelven/MazeGenerator/issues"
+  },
+  "homepage": "https://github.com/tanishalfelven/MazeGenerator#readme",
+  "dependencies": {
+    "mithril": "^1.1.6",
+    "webpack": "^4.12.2",
+    "webpack-cli": "^3.0.8"
+  }
+}
